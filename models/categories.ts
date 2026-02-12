@@ -46,3 +46,26 @@ export const createCategory=async({
     );
     return result.rows[0];
 };
+
+
+//delete category by id
+export const deleteCategoryById=async(id:number):Promise<void>=>{
+    await pool.query("DELETE FROM categories WHERE id=$1",[id]);
+}
+
+
+//update category by id
+export const updateCategoryById=async(
+    id:number,
+    fields:updateCategoryFields
+):Promise<Category|null>=>{
+    const setClause=Object.keys(fields)
+    .map((key,index)=>`${key}=$${index+2}`)
+    .join(",");
+    const values=Object.values(fields);
+    const result=await pool.query(
+        `UPDATE categories SET ${setClause} WHERE id=$1 RETURNING *`,
+        [id,...values]
+    );
+    return result.rows[0] || null;
+};
