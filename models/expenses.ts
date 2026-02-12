@@ -39,3 +39,8 @@ export const getAllExpenses=async():Promise<Expense[]>=>{
     return result.rows;
 
 }
+
+export const getExpenseById=async(id:number):Promise<Expense|null>=>{
+    const result=await pool.query("SELECT * FROM expenses WHERE id=$1",[id]);
+    return result.rows[0];
+}
