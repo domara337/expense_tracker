@@ -36,3 +36,12 @@ const result=await pool.query("SELECT * FROM budgets");
 
 return result.rows;
 }
+
+
+//function to get budget by id
+export const getBudgetbyId=async(id:number):Promise<Budget|null>=>{
+    const result=await pool.query("SELECT * FROM budgets WHERE id=$1",[id]);
+    return result.rows[0];
+}
+
+
