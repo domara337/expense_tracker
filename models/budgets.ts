@@ -58,3 +58,26 @@ export const createBudget=async(
 
 
 
+//function to delete budget by id
+export const deleteBudgetById=async(id:number):Promise<void>=>{
+    await pool.query("DELETE FROM budgets WHERE id=$1",[id]);
+}
+
+
+//function to update budget by id
+export const updateBudgetById=async(id:number,updates:UpdateBudgetInput):Promise<Budget|null>=>{
+    const fields=Object.keys(updates);
+    const values=Object.values(updates);
+
+    //create the SET clause dynamically
+    const setClause=fields.map((field,index)=>`${field}=$${index+2}`).join(", ");
+
+    //execute the update query
+    const result=await pool.query(
+        `UPDATE budgets SET ${setClause} WHERE id=$1 RETURNING *`,
+        [id,...values]
+    );
+
+    return result.rows[0];
+
+}
