@@ -16,7 +16,7 @@ export type CreateBudgetInput={
     month:number;
     year:number;
     amount:number;
-    user_id:number;
+
 }
 
 //type for updating budget
@@ -43,5 +43,18 @@ export const getBudgetbyId=async(id:number):Promise<Budget|null>=>{
     const result=await pool.query("SELECT * FROM budgets WHERE id=$1",[id]);
     return result.rows[0];
 }
+
+
+//function to create budget
+export const createBudget=async(
+    Budget:CreateBudgetInput
+):Promise<Budget>=>{
+    const result=await pool.query(
+        "INSERT INTO budgets (month,year,amount) VALUES ($1,$2,$3) RETURNING *",
+        [Budget.month,Budget.year,Budget.amount]
+    );
+    return result.rows[0];
+}
+
 
 
