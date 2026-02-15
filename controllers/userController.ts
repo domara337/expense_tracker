@@ -3,7 +3,8 @@ import {
     createUser,
     getAllUsers,
     getUserbyId,
-    updateUserByid
+    updateUserByid,
+    deleteUserById
 } from "../models/users";
 
 import { Request, Response } from "express";
@@ -201,6 +202,36 @@ export const updateMe=async(req:Request,res:Response)=>{
 
     catch(error){
      res.status(500).json({message:"Server error"});
+    }
+
+}
+
+
+
+//delete user
+export const deleteMe=async(req:Request,res:Response)=>{
+    try{
+        const userId=req.user?.userId;
+
+        if(!userId){
+            return res.status(401).json({message:"Unauthorized"});
+        }
+
+        const deletedUser=await deleteUserById(userId);
+
+
+        if(!deletedUser){
+            return res.status(404).json({message:"User not found"});
+        }
+
+        return res.status(200).json({message:"User deleted successfully"});
+
+
+
+    }
+    catch(error){
+        console.error(error);
+        return res.status(500).json({message:"Server error"});
     }
 
 }
