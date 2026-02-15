@@ -86,3 +86,28 @@ export const registerUser = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Server error" });
     }
 };
+
+
+//find user by email
+export const getUserbyEmail=async(req:Request,res:Response)=>{
+    try{
+        const email=req.body.email;
+
+        if(!email){
+            return res.status(400).json({message:"Email is required"});
+        }
+
+        const user=await findUserbyEmail(email);
+
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+
+        return res.status(200).json({user});
+
+    }catch(error){
+        console.error(error);
+        return res.status(500).json({message:"Server error"});
+    }
+
+    
