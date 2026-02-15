@@ -110,4 +110,32 @@ export const getUserbyEmail=async(req:Request,res:Response)=>{
         return res.status(500).json({message:"Server error"});
     }
 
-    
+}
+
+
+
+//get user by id
+export const findUserbyId=async(req:Request,res:Response)=>{
+    try{
+        const id=Number(req.params.id);
+      
+
+            if(isNaN(id)){
+                return res.status(400).json({message:"Invalid user id"});
+            }
+
+        const user=await getUserbyId(id);
+
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+
+        return res.status(200).json({user});
+
+    }catch(error){
+        console.error(error);
+        return res.status(500).json({message:"Server error"});
+        
+
+    }
+}
