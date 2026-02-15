@@ -2,11 +2,13 @@ import {
     findUserbyEmail,
     createUser,
     getAllUsers,
-    getUserbyId
+    getUserbyId,
+    updateUserByid
 } from "../models/users";
 
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";     
+import bcrypt from "bcrypt";
 
 
 
@@ -138,4 +140,67 @@ export const findUserbyId=async(req:Request,res:Response)=>{
         
 
     }
+}
+
+
+//update user
+export const updateMe=async(req:Request,res:Response)=>{
+    try{
+
+        const userId=req.user?.userId;
+        const allowedUpdates=["name","email","password"];
+        const updates=Object.keys(req.body);
+
+
+
+        //check if userId exists
+        if(!userId){
+            return res.status(401).json({message:"Unauthorized"});
+        }
+
+        //check if updates are valid
+        const isValid=updates.every(field=>allowedUpdates.includes(field));
+
+        if(!isValid){
+            return res.status(400).json({message:"Invalid updates"});
+        }
+
+
+        //check for valid user
+        const user=await getUserbyId(userId);
+
+
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }   
+
+        //update user
+        const updatedData:{[key:string]:any}={};
+
+        for(let key of updates){
+            updatedData[key]=req.body[key];
+        }
+
+
+        //if update includes password, hash it before saving
+        if(req.body.password){
+            updatedData.password=await bcrypt.hash(req.body.password,10);
+        }
+
+        const newUserData=await updateUserByid(userId,updatedData);
+
+        delete newUserData.password;
+        return res.status(200).json({message:"User updated successfully",user:newUserData});
+
+
+
+
+
+
+    }
+
+    catch(error){
+     res.status(500).json({message:"Server error"});
+    }
+
 }
