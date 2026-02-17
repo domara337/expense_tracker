@@ -10,7 +10,7 @@ declare global {
     }
 }
 
-export const myController=(
+export const authMiddleware=(
     req:Request,
     res:Response,
     next:NextFunction

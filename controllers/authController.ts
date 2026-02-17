@@ -34,11 +34,16 @@ export const registerUser=async(req:Request,res:Response)=>{
 // ================= LOGIN USER =================
 export const LoginUser=async(req:Request,res:Response)=>{
 
-
+try{
     const {email,password}=req.body;
 
+    //check if email and password are provided
+    if(!email || !password){
+        return res.status(400).json({message:"Email and password are required"});
+    }
 
-    try{
+
+    
         const user=await findUserbyEmail(email);
 
         //check if user exists
