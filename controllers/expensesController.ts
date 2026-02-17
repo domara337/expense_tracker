@@ -47,5 +47,29 @@ export const getExpense=async(req:Request,res:Response)=>{
         console.error(error);
         return res.status(500).json({message:"Server error"});
     }
-    
+
     }
+
+
+    //create expense
+    export const createNewExpense=async(req:Request,res:Response)=>{
+
+        try{
+            const expenseData:CreateExpenseInput=req.body;
+
+            //validate required fields
+            if(!expenseData.description || !expenseData.amount || !expenseData.expense_date || !expenseData.user_id){
+                return res.status(400).json({message:"Missing required fields"});
+            }
+
+            //create expense query
+            const newExpense=await createExpense(expenseData);
+
+            return res.status(201).json({expense:newExpense});
+
+        }
+        catch(error){
+            console.error(error);
+            return res.status(500).json({message:"Server error"});
+        }
+        }
