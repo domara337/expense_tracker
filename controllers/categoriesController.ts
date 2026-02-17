@@ -33,7 +33,35 @@ export const getCategories=async(req:Request,res:Response)=>{
         catch(error){
 
             return res.status(500).json({message:"Server error"});
-            
+
         }
 
     }
+
+
+//get category by id
+export const getCategory=async(req:Request,res:Response)=>{
+    try{
+        const id=Number(req.params.id);
+
+        //validate id
+        if(isNaN(id)){
+            return res.status(401).json({message:"No id found"});
+        }
+
+        const category=await findCategoryById(id);
+
+        if (!category){
+            return res.status(404).json({message:"No category found"})
+        }
+
+        //return response
+        return res.status(200).json({message:"found category" , category})
+
+    }
+
+    catch(error){
+        return res.status(500).json({message:"Server error"})
+    }
+
+}
