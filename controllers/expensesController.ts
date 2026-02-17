@@ -73,3 +73,32 @@ export const getExpense=async(req:Request,res:Response)=>{
             return res.status(500).json({message:"Server error"});
         }
         }
+
+        //delete expense by id
+ export const deleteExpense=async(req:Request,res:Response)=>{
+    try{
+
+
+        const id=Number(req.params.id);
+
+        //validate id
+        if(isNaN(id)){
+            return res.status(400).json({message:"Invalid expense id"});
+        }
+
+        //delete expense query
+            const expense_deleted=await deleteExpenseById(id);
+
+        
+            return res.status(200).json({message:"Expense deleted successfully"});
+
+
+
+
+
+    }
+    catch(err){
+        res.status(500).json({message:"Server error"});
+    }
+
+}
